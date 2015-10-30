@@ -1,3 +1,5 @@
+extern crate sdl;
+
 fn main() {
-    println!("Hello, world!");
+    sdl::init(sdl::INIT_VIDEO);
 }

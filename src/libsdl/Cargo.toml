@@ -1,8 +1,10 @@
 [package]
-name = "game"
+name = "sdl"
 version = "0.1.0"
 authors = ["Andrey Manzharov <manzharov@krista.ru>"]
 
-[dependencies.sdl]
-path = "src/libsdl"
+[lib]
+path = "./lib.rs"
 
+[dependencies]
+libc = "0.1"

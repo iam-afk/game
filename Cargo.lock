@@ -1,4 +1,19 @@
 [root]
 name = "game"
 version = "0.1.0"
+dependencies = [
+ "sdl 0.1.0",
+]
+
+[[package]]
+name = "libc"
+version = "0.1.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "sdl"
+version = "0.1.0"
+dependencies = [
+ "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
