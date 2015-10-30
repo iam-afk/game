@@ -1,5 +1,6 @@
-pub mod window;
 mod error;
+pub mod surface;
+pub mod window;
 
 #[link(name = "SDL2")]
 extern {

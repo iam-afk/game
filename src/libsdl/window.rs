@@ -1,4 +1,5 @@
 use super::error;
+use super::surface::Surface;
 
 #[repr(C)]
 pub struct Window;
@@ -8,6 +9,8 @@ extern {
     fn SDL_CreateWindow(title: *const u8, x: i32, y: i32, w: i32, h: i32, flags: u32)
         -> *const Window;
     fn SDL_DestroyWindow(window: *const Window);
+    fn SDL_GetWindowSurface(window: *const Window) -> *mut Surface;
+    fn SDL_UpdateWindowSurface(window: *const Window) -> i32;
 }
 
 const UNDEFINED_MASK: isize = 0x1FFF0000;
@@ -44,6 +47,20 @@ impl Window {
         unsafe { SDL_DestroyWindow(self) }
     }
 
+    pub fn get_surface(&self) -> &mut Surface {
+        let ptr = unsafe { SDL_GetWindowSurface(self) };
+        if ptr.is_null() {
+            panic!("{:?}", error::get_error());
+        }
+        unsafe { &mut *ptr }
+    }
+
+    pub fn update_surface(&self) {
+        match unsafe { SDL_UpdateWindowSurface(self) } {
+            0 => {},
+            _ => panic!("{:?}", error::get_error())
+        }
+    }
 }
 
 pub fn create(title: &str, w: i32, h: i32, flags: u32) -> &Window {

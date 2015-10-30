@@ -9,6 +9,12 @@ fn main() {
                                      SCREEN_WIDTH, SCREEN_HEIGHT,
                                      sdl::window::Flags::Shown as u32);
 
+    let surface = window.get_surface();
+    let color = surface.map_rgb(0xFFu8, 0xFFu8, 0xFFu8);
+    surface.fill_rect(None, color);
+
+    window.update_surface();
+
     sdl::delay(2000);
 
     window.destroy();
