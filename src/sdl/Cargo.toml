@@ -7,4 +7,4 @@ authors = ["Andrey Manzharov <manzharov@krista.ru>"]
 path = "./lib.rs"
 
 [dependencies]
-libc = "0.1"
+libc = "0.2"

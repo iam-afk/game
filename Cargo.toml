@@ -4,5 +4,5 @@ version = "0.1.0"
 authors = ["Andrey Manzharov <manzharov@krista.ru>"]
 
 [dependencies.sdl]
-path = "src/libsdl"
+path = "src/sdl"
 
