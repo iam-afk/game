@@ -12,11 +12,11 @@ fn main() -> sdl::Result<()> {
         SCREEN_HEIGHT,
         sdl::window::Flags::Shown,
     )?;
+    let screen_surface = window.get_surface()?;
 
-    let surface = window.get_surface()?;
-    let color = surface.map_rgb(0xFFu8, 0xFFu8, 0xFFu8);
-    surface.fill_rect(None, color)?;
+    let hello_world = sdl.load_bmp("assets/02_getting_an_image_on_the_screen/hello_world.bmp")?;
 
+    hello_world.blit(None, &screen_surface, None);
     window.update_surface()?;
 
     sdl.delay(2000);

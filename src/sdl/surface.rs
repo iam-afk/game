@@ -1,17 +1,29 @@
 extern crate libc;
 
 use crate::error;
+use crate::rwops;
+use std::mem;
+use std::ops;
+use std::path;
 
-pub struct Surface<'a> {
+pub struct Surface {
     ptr: *const SurfaceRec,
-    _pd: std::marker::PhantomData<&'a SurfaceRec>,
 }
 
-impl<'a> Surface<'a> {
-    pub(crate) fn new(ptr: *const SurfaceRec) -> Surface<'a> {
-        Surface {
-            ptr,
-            _pd: std::marker::PhantomData,
+impl ops::Drop for Surface {
+    fn drop(&mut self) {
+        unsafe { SDL_FreeSurface(self.ptr) }
+    }
+}
+
+impl Surface {
+    pub fn load_bmp<P: AsRef<path::Path>>(file: P) -> crate::Result<Surface> {
+        let src = rwops::RWOps::from_file(file)?;
+        let ptr = unsafe { SDL_LoadBMP_RW(src.ptr, 0) };
+        if ptr.is_null() {
+            Err(error::SDLError::get())
+        } else {
+            Ok(Surface { ptr })
         }
     }
     pub fn fill_rect(&self, rect: Option<&Rect>, color: u32) -> crate::Result<()> {
@@ -23,6 +35,32 @@ impl<'a> Surface<'a> {
 
     pub fn map_rgb(&self, r: u8, g: u8, b: u8) -> u32 {
         unsafe { SDL_MapRGB((*self.ptr).format, r, g, b) }
+    }
+
+    pub fn blit(&self, src_rect: Option<&Rect>, dst: &Surface, dst_rect: Option<&Rect>) -> bool {
+        let result = unsafe { SDL_UpperBlit(self.ptr, src_rect, dst.ptr, dst_rect) };
+        result == 0
+    }
+}
+
+pub struct WindowSurface<'a> {
+    _ptr: *const SurfaceRec,
+    _pd: std::marker::PhantomData<&'a SurfaceRec>,
+}
+
+impl<'a> ops::Deref for WindowSurface<'a> {
+    type Target = Surface;
+    fn deref(&self) -> &Self::Target {
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl<'a> WindowSurface<'a> {
+    pub(crate) fn new(ptr: *const SurfaceRec) -> WindowSurface<'a> {
+        WindowSurface {
+            _ptr: ptr,
+            _pd: std::marker::PhantomData,
+        }
     }
 }
 
@@ -98,5 +136,13 @@ pub(crate) struct SurfaceRec {
 #[link(name = "SDL2")]
 extern "C" {
     fn SDL_FillRect(dst: *const SurfaceRec, rect: Option<&Rect>, color: u32) -> libc::c_int;
+    fn SDL_FreeSurface(surface: *const SurfaceRec);
     fn SDL_MapRGB(format: *const PixelFormat, r: u8, g: u8, b: u8) -> u32;
+    fn SDL_LoadBMP_RW(src: *const rwops::RWOpsRec, free_src: i32) -> *const SurfaceRec;
+    fn SDL_UpperBlit(
+        src: *const SurfaceRec,
+        src_rect: Option<&Rect>,
+        dst: *const SurfaceRec,
+        dst_rect: Option<&Rect>,
+    ) -> i32;
 }

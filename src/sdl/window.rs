@@ -57,12 +57,12 @@ impl<'a> Window<'a> {
         }
     }
 
-    pub fn get_surface(&self) -> crate::Result<surface::Surface> {
+    pub fn get_surface(&self) -> crate::Result<surface::WindowSurface> {
         let ptr = unsafe { SDL_GetWindowSurface(self.ptr) };
         if ptr.is_null() {
             Err(error::SDLError::get())
         } else {
-            Ok(surface::Surface::new(ptr))
+            Ok(surface::WindowSurface::new(ptr))
         }
     }
 

@@ -1,8 +1,10 @@
 mod error;
+mod rwops;
 pub mod surface;
 pub mod window;
 
 use std::ops;
+use std::path;
 
 #[link(name = "SDL2")]
 extern "C" {
@@ -64,6 +66,10 @@ impl SDL {
             h,
             flags,
         )
+    }
+
+    pub fn load_bmp<P: AsRef<path::Path>>(&self, file: P) -> crate::Result<surface::Surface> {
+        surface::Surface::load_bmp(file)
     }
 
     pub fn delay(&self, ms: u32) {
