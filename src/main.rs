@@ -14,12 +14,18 @@ fn main() -> sdl::Result<()> {
     )?;
     let screen_surface = window.get_surface()?;
 
-    let hello_world = sdl.load_bmp("assets/02_getting_an_image_on_the_screen/hello_world.bmp")?;
+    let x_out = sdl.load_bmp("assets/03_event_driven_programming/x.bmp")?;
 
-    hello_world.blit(None, &screen_surface, None);
-    window.update_surface()?;
-
-    sdl.delay(2000);
+    'game: loop {
+        while let Some(event) = sdl.poll_event() {
+            match event {
+                sdl::Event::Quit { .. } => break 'game,
+                _ => (),
+            }
+        }
+        x_out.blit(None, &screen_surface, None);
+        window.update_surface()?;
+    }
 
     Ok(())
 }

@@ -1,8 +1,11 @@
+#![feature(arbitrary_enum_discriminant)]
 mod error;
+pub mod event;
 mod rwops;
 pub mod surface;
 pub mod window;
 
+pub use event::Event;
 use std::ops;
 use std::path;
 
@@ -74,5 +77,9 @@ impl SDL {
 
     pub fn delay(&self, ms: u32) {
         unsafe { SDL_Delay(ms) }
+    }
+
+    pub fn poll_event(&self) -> Option<Event> {
+        Event::poll()
     }
 }
