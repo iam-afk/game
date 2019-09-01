@@ -8,14 +8,20 @@ pub enum Scancode {
     Up = 82,
 }
 
+const SCANCODE_MASK: i32 = 1 << 30;
+
+macro_rules! scancode_to_keycode {
+    ($code:path) => { $code as i32 | SCANCODE_MASK }
+}
+
 #[repr(i32)]
 pub enum Keycode {
     Unknown = 0,
 
-    Right = Scancode::Right as i32 | 1 << 30,
-    Left = Scancode::Left as i32 | 1 << 30,
-    Down = Scancode::Down as i32 | 1 << 30,
-    Up = Scancode::Up as i32 | 1 << 30,
+    Right = scancode_to_keycode!(Scancode::Right),
+    Left = scancode_to_keycode!(Scancode::Left),
+    Down = scancode_to_keycode!(Scancode::Down),
+    Up = scancode_to_keycode!(Scancode::Up),
 }
 
 #[repr(C)]
