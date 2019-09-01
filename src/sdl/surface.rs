@@ -26,6 +26,11 @@ impl Surface {
             Ok(Surface { ptr })
         }
     }
+
+    pub fn format(&self) -> &PixelFormat {
+        unsafe { &*((*self.ptr).format) }
+    }
+
     pub fn fill_rect(&self, rect: Option<&Rect>, color: u32) -> crate::Result<()> {
         match unsafe { SDL_FillRect(self.ptr, rect, color) } {
             0 => Ok(()),
@@ -37,8 +42,27 @@ impl Surface {
         unsafe { SDL_MapRGB((*self.ptr).format, r, g, b) }
     }
 
+    pub fn convert(self, fmt: &PixelFormat, flags: u32) -> crate::Result<Surface> {
+        let ptr = unsafe { SDL_ConvertSurface(self.ptr, fmt, flags) };
+        if ptr.is_null() {
+            Err(error::SDLError::get())
+        } else {
+            Ok(Surface { ptr })
+        }
+    }
+
     pub fn blit(&self, src_rect: Option<&Rect>, dst: &Surface, dst_rect: Option<&Rect>) -> bool {
         let result = unsafe { SDL_UpperBlit(self.ptr, src_rect, dst.ptr, dst_rect) };
+        result == 0
+    }
+
+    pub fn blit_scaled(
+        &self,
+        src_rect: Option<&Rect>,
+        dst: &Surface,
+        dst_rect: Option<&Rect>,
+    ) -> bool {
+        let result = unsafe { SDL_UpperBlitScaled(self.ptr, src_rect, dst.ptr, dst_rect) };
         result == 0
     }
 }
@@ -81,7 +105,7 @@ struct Palette {
 }
 
 #[repr(C)]
-struct PixelFormat {
+pub struct PixelFormat {
     format: u32,
     palette: *const Palette,
     bits_per_pixel: u8,
@@ -106,10 +130,10 @@ struct PixelFormat {
 
 #[repr(C)]
 pub struct Rect {
-    x: i32,
-    y: i32,
-    w: i32,
-    h: i32,
+    pub x: i32,
+    pub y: i32,
+    pub w: i32,
+    pub h: i32,
 }
 
 #[repr(C)]
@@ -135,11 +159,22 @@ pub(crate) struct SurfaceRec {
 
 #[link(name = "SDL2")]
 extern "C" {
+    fn SDL_ConvertSurface(
+        src: *const SurfaceRec,
+        fmt: *const PixelFormat,
+        flags: u32,
+    ) -> *const SurfaceRec;
     fn SDL_FillRect(dst: *const SurfaceRec, rect: Option<&Rect>, color: u32) -> libc::c_int;
     fn SDL_FreeSurface(surface: *const SurfaceRec);
     fn SDL_MapRGB(format: *const PixelFormat, r: u8, g: u8, b: u8) -> u32;
     fn SDL_LoadBMP_RW(src: *const rwops::RWOpsRec, free_src: i32) -> *const SurfaceRec;
     fn SDL_UpperBlit(
+        src: *const SurfaceRec,
+        src_rect: Option<&Rect>,
+        dst: *const SurfaceRec,
+        dst_rect: Option<&Rect>,
+    ) -> i32;
+    fn SDL_UpperBlitScaled(
         src: *const SurfaceRec,
         src_rect: Option<&Rect>,
         dst: *const SurfaceRec,

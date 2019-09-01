@@ -10,6 +10,7 @@ pub use event::Event;
 pub use keyboard::{Keycode, Keysym};
 use std::ops;
 use std::path;
+pub use surface::Rect;
 
 #[link(name = "SDL2")]
 extern "C" {

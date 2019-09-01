@@ -1,6 +1,6 @@
 extern crate sdl;
 
-use sdl::{Keycode, Keysym};
+use sdl::Rect;
 
 const SCREEN_WIDTH: i32 = 640;
 const SCREEN_HEIGHT: i32 = 480;
@@ -16,33 +16,24 @@ fn main() -> sdl::Result<()> {
     )?;
     let screen_surface = window.get_surface()?;
 
-    let default_surface = sdl.load_bmp("assets/04_key_presses/press.bmp")?;
-    let up_surface = sdl.load_bmp("assets/04_key_presses/up.bmp")?;
-    let down_surface = sdl.load_bmp("assets/04_key_presses/down.bmp")?;
-    let left_surface = sdl.load_bmp("assets/04_key_presses/left.bmp")?;
-    let right_surface = sdl.load_bmp("assets/04_key_presses/right.bmp")?;
+    let stretched_surface = sdl
+        .load_bmp("assets/05_optimized_surface_loading_and_soft_stretching/stretch.bmp")?
+        .convert(screen_surface.format(), 0)?;
 
-    let mut current_surface = &default_surface;
     'game: loop {
         while let Some(event) = sdl.poll_event() {
             match event {
                 sdl::Event::Quit { .. } => break 'game,
-                sdl::Event::KeyDown {
-                    keysym: Keysym { sym, .. },
-                    ..
-                } => {
-                    current_surface = match sym {
-                        Keycode::Up => &up_surface,
-                        Keycode::Down => &down_surface,
-                        Keycode::Left => &left_surface,
-                        Keycode::Right => &right_surface,
-                        _ => &default_surface,
-                    }
-                }
                 _ => (),
             }
         }
-        current_surface.blit(None, &screen_surface, None);
+        let stretched_rect = Rect {
+            x: 0,
+            y: 0,
+            w: SCREEN_WIDTH,
+            h: SCREEN_HEIGHT,
+        };
+        stretched_surface.blit_scaled(None, &screen_surface, Some(&stretched_rect));
         window.update_surface()?;
     }
 
