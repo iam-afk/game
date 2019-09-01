@@ -1,11 +1,13 @@
 #![feature(arbitrary_enum_discriminant)]
 mod error;
 pub mod event;
+mod keyboard;
 mod rwops;
 pub mod surface;
 pub mod window;
 
 pub use event::Event;
+pub use keyboard::{Keycode, Keysym};
 use std::ops;
 use std::path;
 
