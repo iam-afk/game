@@ -26,6 +26,9 @@ impl Surface {
             Ok(Surface { ptr })
         }
     }
+    pub(crate) fn new(ptr: *const SurfaceRec) -> Surface {
+        Surface { ptr }
+    }
 
     pub fn format(&self) -> &PixelFormat {
         unsafe { &*((*self.ptr).format) }

@@ -1,11 +1,13 @@
 #![feature(arbitrary_enum_discriminant)]
 mod error;
 pub mod event;
+pub mod image;
 mod keyboard;
 mod rwops;
 pub mod surface;
 pub mod window;
 
+pub use error::SDLError as Error;
 pub use event::Event;
 pub use keyboard::{Keycode, Keysym};
 use std::ops;
@@ -72,6 +74,15 @@ impl SDL {
             h,
             flags,
         )
+    }
+
+    pub fn img(&self, flag: image::Init) -> crate::Result<image::Img> {
+        let flags = flag as libc::c_int;
+        if unsafe { image::IMG_Init(flags) } != flags {
+            Err(crate::error::SDLError::get())
+        } else {
+            Ok(image::Img::new(&self))
+        }
     }
 
     pub fn load_bmp<P: AsRef<path::Path>>(&self, file: P) -> crate::Result<surface::Surface> {

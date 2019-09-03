@@ -14,10 +14,13 @@ fn main() -> sdl::Result<()> {
         SCREEN_HEIGHT,
         sdl::window::Flags::Shown,
     )?;
+
+    let img = sdl.img(sdl::image::Init::Png)?;
+
     let screen_surface = window.get_surface()?;
 
-    let stretched_surface = sdl
-        .load_bmp("assets/05_optimized_surface_loading_and_soft_stretching/stretch.bmp")?
+    let stretched_surface = img
+        .load("assets/06_extension_libraries_and_loading_other_image_formats/loaded.png")?
         .convert(screen_surface.format(), 0)?;
 
     'game: loop {
