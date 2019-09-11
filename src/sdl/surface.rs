@@ -2,7 +2,6 @@ extern crate libc;
 
 use crate::error;
 use crate::rwops;
-use std::mem;
 use std::ops;
 use std::path;
 
@@ -78,7 +77,7 @@ pub struct WindowSurface<'a> {
 impl<'a> ops::Deref for WindowSurface<'a> {
     type Target = Surface;
     fn deref(&self) -> &Self::Target {
-        unsafe { mem::transmute(self) }
+        unsafe { &*(self as *const WindowSurface<'a> as *const Surface) }
     }
 }
 

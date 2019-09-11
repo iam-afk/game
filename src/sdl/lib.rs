@@ -21,17 +21,17 @@ extern "C" {
     fn SDL_Quit();
 }
 
-pub const INIT_TIMER: u32 = 0x00000001;
-pub const INIT_AUDIO: u32 = 0x00000010;
-pub const INIT_VIDEO: u32 = 0x00000020;
+pub const INIT_TIMER: u32 = 0x0000_0001;
+pub const INIT_AUDIO: u32 = 0x0000_0010;
+pub const INIT_VIDEO: u32 = 0x0000_0020;
 /**< SDL_INIT_VIDEO implies SDL_INIT_EVENTS */
-pub const INIT_JOYSTICK: u32 = 0x00000200;
+pub const INIT_JOYSTICK: u32 = 0x0000_0200;
 /**< SDL_INIT_JOYSTICK implies SDL_INIT_EVENTS */
-pub const INIT_HAPTIC: u32 = 0x00001000;
-pub const INIT_GAMECONTROLLER: u32 = 0x00002000;
+pub const INIT_HAPTIC: u32 = 0x0000_1000;
+pub const INIT_GAMECONTROLLER: u32 = 0x0000_2000;
 /**< SDL_INIT_GAMECONTROLLER implies SDL_INIT_JOYSTICK */
-pub const INIT_EVENTS: u32 = 0x00004000;
-pub const INIT_NOPARACHUTE: u32 = 0x00100000;
+pub const INIT_EVENTS: u32 = 0x0000_4000;
+pub const INIT_NOPARACHUTE: u32 = 0x0010_0000;
 /**< Don't catch fatal signals */
 pub const INIT_EVERYTHING: u32 = INIT_TIMER
     | INIT_AUDIO

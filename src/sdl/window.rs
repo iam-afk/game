@@ -3,26 +3,26 @@ use crate::surface;
 use std::ffi;
 use std::ops;
 
-const UNDEFINED_MASK: i32 = 0x1FFF0000;
+const UNDEFINED_MASK: i32 = 0x1FFF_0000;
 
 #[repr(i32)]
 pub enum Pos {
-    Undefined = UNDEFINED_MASK | 0,
+    Undefined = UNDEFINED_MASK,
 }
 
 #[repr(u32)]
 pub enum Flags {
-    Fullscreen = 0x00000001,
-    FullscreenDesktop = Flags::Fullscreen as u32 | 0x00001000,
-    OpenGL = 0x00000002,
-    Shown = 0x00000004,
-    Hidden = 0x00000008,
-    Borderless = 0x00000010,
-    Resizable = 0x00000020,
-    Minimized = 0x00000040,
-    Maximized = 0x00000080,
-    InputGrabbed = 0x00000100,
-    AllowHighDPI = 0x00002000,
+    Fullscreen = 0x0000_0001,
+    FullscreenDesktop = Flags::Fullscreen as u32 | 0x0000_1000,
+    OpenGL = 0x0000_0002,
+    Shown = 0x0000_0004,
+    Hidden = 0x0000_0008,
+    Borderless = 0x0000_0010,
+    Resizable = 0x0000_0020,
+    Minimized = 0x0000_0040,
+    Maximized = 0x0000_0080,
+    InputGrabbed = 0x0000_0100,
+    AllowHighDPI = 0x0000_2000,
 }
 
 pub struct Window<'a> {

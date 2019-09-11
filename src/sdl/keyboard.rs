@@ -10,7 +10,7 @@ pub enum Scancode {
 
 impl Scancode {
     const MASK: i32 = 1 << 30;
-    const fn to_keycode(self) -> i32 {
+    const fn keycode(self) -> i32 {
         self as i32 | Self::MASK
     }
 }
@@ -19,10 +19,10 @@ impl Scancode {
 pub enum Keycode {
     Unknown = 0,
 
-    Right = Scancode::Right.to_keycode(),
-    Left = Scancode::Left.to_keycode(),
-    Down = Scancode::Down.to_keycode(),
-    Up = Scancode::Up.to_keycode(),
+    Right = Scancode::Right.keycode(),
+    Left = Scancode::Left.keycode(),
+    Down = Scancode::Down.keycode(),
+    Up = Scancode::Up.keycode(),
 }
 
 #[repr(C)]

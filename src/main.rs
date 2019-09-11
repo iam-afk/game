@@ -25,9 +25,8 @@ fn main() -> sdl::Result<()> {
 
     'game: loop {
         while let Some(event) = sdl.poll_event() {
-            match event {
-                sdl::Event::Quit { .. } => break 'game,
-                _ => (),
+            if let sdl::Event::Quit { .. } = event {
+                break 'game;
             }
         }
         let stretched_rect = Rect {
