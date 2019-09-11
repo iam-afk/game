@@ -8,20 +8,21 @@ pub enum Scancode {
     Up = 82,
 }
 
-const SCANCODE_MASK: i32 = 1 << 30;
-
-macro_rules! scancode_to_keycode {
-    ($code:path) => { $code as i32 | SCANCODE_MASK }
+impl Scancode {
+    const MASK: i32 = 1 << 30;
+    const fn to_keycode(self) -> i32 {
+        self as i32 | Self::MASK
+    }
 }
 
 #[repr(i32)]
 pub enum Keycode {
     Unknown = 0,
 
-    Right = scancode_to_keycode!(Scancode::Right),
-    Left = scancode_to_keycode!(Scancode::Left),
-    Down = scancode_to_keycode!(Scancode::Down),
-    Up = scancode_to_keycode!(Scancode::Up),
+    Right = Scancode::Right.to_keycode(),
+    Left = Scancode::Left.to_keycode(),
+    Down = Scancode::Down.to_keycode(),
+    Up = Scancode::Up.to_keycode(),
 }
 
 #[repr(C)]
