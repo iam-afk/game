@@ -1,7 +1,7 @@
 [package]
-name = "game"
+name = "sdl"
 version = "0.1.0"
 authors = ["Andrey Manzharov <andreyrmg@gmail.com>"]
 
-[dependencies.sdl]
-path = "sdl"
+[dependencies]
+libc = "0.2"

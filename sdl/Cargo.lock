@@ -4,7 +4,7 @@
 name = "game"
 version = "0.1.0"
 dependencies = [
- "sdl",
+ "libc",
 ]
 
 [[package]]
@@ -12,10 +12,3 @@ name = "libc"
 version = "0.2.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d515b1f41455adea1313a4a2ac8a8a477634fbae63cc6100e3aebb207ce61558"
-
-[[package]]
-name = "sdl"
-version = "0.1.0"
-dependencies = [
- "libc",
-]
