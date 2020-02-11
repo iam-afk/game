@@ -1,6 +1,6 @@
 use std::ffi;
 
-pub const RENDER_SCALE_QUALITY: &'static str = "SDL_RENDER_SCALE_QUALITY";
+pub const RENDER_SCALE_QUALITY: &str = "SDL_RENDER_SCALE_QUALITY";
 
 pub(crate) fn set(name: &str, value: &str) -> bool {
     let name = ffi::CString::new(name).unwrap();

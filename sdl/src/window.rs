@@ -27,13 +27,13 @@ bitflags! {
         const FULLSCREEN_DESKTOP = Self::FULLSCREEN.bits | 0x0000_1000;
         const FOREIGN = 0x0000_0800;
         const ALLOW_HIGH_DPI = 0x0000_2000;
-        const MOUSE_CAPTURE = 0x00004000;
-        const ALWAYS_ON_TOP = 0x00008000;
-        const SKIP_TASKBAR  = 0x00010000;
-        const UTILITY       = 0x00020000;
-        const TOOLTIP       = 0x00040000;
-        const POPUP_MENU    = 0x00080000;
-        const VULKAN        = 0x10000000;
+        const MOUSE_CAPTURE = 0x0000_4000;
+        const ALWAYS_ON_TOP = 0x0000_8000;
+        const SKIP_TASKBAR  = 0x0001_0000;
+        const UTILITY       = 0x0002_0000;
+        const TOOLTIP       = 0x0004_0000;
+        const POPUP_MENU    = 0x0008_0000;
+        const VULKAN        = 0x1000_0000;
     }
 }
 
