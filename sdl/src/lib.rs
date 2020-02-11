@@ -1,4 +1,8 @@
 #![feature(arbitrary_enum_discriminant)]
+
+#[macro_use]
+extern crate bitflags;
+
 mod error;
 pub mod event;
 pub mod image;
@@ -23,30 +27,31 @@ extern "C" {
     fn SDL_Quit();
 }
 
-pub const INIT_TIMER: u32 = 0x0000_0001;
-pub const INIT_AUDIO: u32 = 0x0000_0010;
-pub const INIT_VIDEO: u32 = 0x0000_0020;
-/**< SDL_INIT_VIDEO implies SDL_INIT_EVENTS */
-pub const INIT_JOYSTICK: u32 = 0x0000_0200;
-/**< SDL_INIT_JOYSTICK implies SDL_INIT_EVENTS */
-pub const INIT_HAPTIC: u32 = 0x0000_1000;
-pub const INIT_GAMECONTROLLER: u32 = 0x0000_2000;
-/**< SDL_INIT_GAMECONTROLLER implies SDL_INIT_JOYSTICK */
-pub const INIT_EVENTS: u32 = 0x0000_4000;
-pub const INIT_NOPARACHUTE: u32 = 0x0010_0000;
-/**< Don't catch fatal signals */
-pub const INIT_EVERYTHING: u32 = INIT_TIMER
-    | INIT_AUDIO
-    | INIT_VIDEO
-    | INIT_EVENTS
-    | INIT_JOYSTICK
-    | INIT_HAPTIC
-    | INIT_GAMECONTROLLER;
+bitflags! {
+    #[repr(C)]
+    pub struct Init: u32 {
+        const TIMER = 0x0000_0001;
+        const AUDIO = 0x0000_0010;
+        const VIDEO = 0x0000_0020;
+        const JOYSTICK = 0x0000_0200;
+        const HAPTIC = 0x0000_1000;
+        const GAMECONTROLLER = 0x0000_2000;
+        const EVENTS = 0x0000_4000;
+        const NOPARACHUTE = 0x0010_0000;
+        const EVERYTHING = Self::TIMER.bits
+            | Self::AUDIO.bits
+            | Self::VIDEO.bits
+            | Self::EVENTS.bits
+            | Self::JOYSTICK.bits
+            | Self::HAPTIC.bits
+            | Self::GAMECONTROLLER.bits;
+    }
+}
 
 pub type Result<T> = std::result::Result<T, error::SDLError>;
 
-pub fn init(flags: u32) -> Result<SDL> {
-    match unsafe { SDL_Init(flags) } {
+pub fn init(flags: Init) -> Result<SDL> {
+    match unsafe { SDL_Init(flags.bits()) } {
         0 => Ok(SDL {}),
         _ => Err(error::SDLError::get()),
     }
@@ -61,7 +66,7 @@ impl ops::Drop for SDL {
 }
 
 impl SDL {
-    pub fn window_create(
+    pub fn create_window(
         &self,
         title: &str,
         w: i32,
@@ -78,13 +83,8 @@ impl SDL {
         )
     }
 
-    pub fn image(&self, flag: image::Init) -> crate::Result<image::Img> {
-        let flags = flag as libc::c_int;
-        if unsafe { image::IMG_Init(flags) } != flags {
-            Err(crate::error::SDLError::get())
-        } else {
-            Ok(image::Img::new(&self))
-        }
+    pub fn image(&self, flags: image::Init) -> crate::Result<image::Img> {
+        image::Img::init(self, flags)
     }
 
     pub fn load_bmp<P: AsRef<path::Path>>(&self, file: P) -> crate::Result<surface::Surface> {

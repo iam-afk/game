@@ -4,12 +4,13 @@ use crate::window;
 use crate::Rect;
 use std::ops;
 
-#[repr(u32)]
-pub enum Flags {
-    Software = 0x1,
-    Accelerated = 0x2,
-    PresentVSync = 0x4,
-    TargetTexture = 0x8,
+bitflags! {
+    pub struct Flags: u32 {
+        const SOFTWARE = 0x1;
+        const ACCELERATED = 0x2;
+        const PRESENTVSYNC = 0x4;
+        const TARGETTEXTURE = 0x8;
+    }
 }
 
 #[repr(C)]
@@ -36,7 +37,7 @@ impl Renderer<'_> {
         index: i32,
         flags: Flags,
     ) -> crate::Result<Self> {
-        let ptr = unsafe { SDL_CreateRenderer(window, index, flags) };
+        let ptr = unsafe { SDL_CreateRenderer(window, index, flags.bits()) };
         if ptr.is_null() {
             Err(error::SDLError::get())
         } else {
@@ -124,7 +125,7 @@ extern "C" {
     fn SDL_CreateRenderer(
         window: *const window::WindowRec,
         index: i32,
-        flags: Flags,
+        flags: u32,
     ) -> *const RendererRec;
     fn SDL_DestroyRenderer(renderer: *const RendererRec);
     fn SDL_SetRenderDrawColor(renderer: *const RendererRec, r: u8, g: u8, b: u8, a: u8) -> i32;

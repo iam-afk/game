@@ -11,19 +11,30 @@ pub enum Pos {
     Undefined = UNDEFINED_MASK,
 }
 
-#[repr(u32)]
-pub enum Flags {
-    Fullscreen = 0x0000_0001,
-    FullscreenDesktop = Flags::Fullscreen as u32 | 0x0000_1000,
-    OpenGL = 0x0000_0002,
-    Shown = 0x0000_0004,
-    Hidden = 0x0000_0008,
-    Borderless = 0x0000_0010,
-    Resizable = 0x0000_0020,
-    Minimized = 0x0000_0040,
-    Maximized = 0x0000_0080,
-    InputGrabbed = 0x0000_0100,
-    AllowHighDPI = 0x0000_2000,
+bitflags! {
+    pub struct Flags: u32 {
+        const FULLSCREEN = 0x0000_0001;
+        const OPENGL = 0x0000_0002;
+        const SHOWN = 0x0000_0004;
+        const HIDDEN = 0x0000_0008;
+        const BORDERLESS = 0x0000_0010;
+        const RESIZABLE = 0x0000_0020;
+        const MINIMIZED = 0x0000_0040;
+        const MAXIMIZED = 0x0000_0080;
+        const INPUT_GRABBED = 0x0000_0100;
+        const INPUT_FOCUS = 0x0000_0200;
+        const MOUSE_FOCUS = 0x0000_0400;
+        const FULLSCREEN_DESKTOP = Self::FULLSCREEN.bits | 0x0000_1000;
+        const FOREIGN = 0x0000_0800;
+        const ALLOW_HIGH_DPI = 0x0000_2000;
+        const MOUSE_CAPTURE = 0x00004000;
+        const ALWAYS_ON_TOP = 0x00008000;
+        const SKIP_TASKBAR  = 0x00010000;
+        const UTILITY       = 0x00020000;
+        const TOOLTIP       = 0x00040000;
+        const POPUP_MENU    = 0x00080000;
+        const VULKAN        = 0x10000000;
+    }
 }
 
 pub struct Window<'a> {
@@ -47,7 +58,7 @@ impl<'a> Window<'a> {
         flags: Flags,
     ) -> crate::Result<Window<'a>> {
         let title = ffi::CString::new(title)?;
-        let ptr = unsafe { SDL_CreateWindow(title.as_ptr(), x, y, w, h, flags) };
+        let ptr = unsafe { SDL_CreateWindow(title.as_ptr(), x, y, w, h, flags.bits()) };
         if ptr.is_null() {
             Err(error::SDLError::get())
         } else {
@@ -59,7 +70,7 @@ impl<'a> Window<'a> {
     }
 
     pub fn create_renderer(&self) -> crate::Result<render::Renderer> {
-        render::Renderer::new(self.ptr, -1, render::Flags::Accelerated)
+        render::Renderer::new(self.ptr, -1, render::Flags::ACCELERATED)
     }
 
     pub fn get_surface(&self) -> crate::Result<surface::WindowSurface> {
@@ -92,7 +103,7 @@ extern "C" {
         y: i32,
         w: i32,
         h: i32,
-        flags: Flags,
+        flags: u32,
     ) -> *const WindowRec;
     fn SDL_DestroyWindow(window: *const WindowRec);
     fn SDL_GetWindowSurface(window: *const WindowRec) -> *const surface::SurfaceRec;

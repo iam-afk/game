@@ -3,16 +3,17 @@ use std::ffi;
 use std::ops;
 use std::path;
 
-#[repr(C)]
-pub enum Init {
-    Jpg = 0x1,
-    Png = 0x2,
-    Tif = 0x4,
-    Webp = 0x8,
+bitflags! {
+    pub struct Init: i32 {
+        const JPG = 0x1;
+        const PNG = 0x2;
+        const TIF = 0x4;
+        const WEBP = 0x8;
+    }
 }
 
 pub struct Img<'a> {
-    _pd: std::marker::PhantomData<&'a crate::SDL>,
+    pd: std::marker::PhantomData<&'a crate::SDL>,
 }
 
 impl<'a> ops::Drop for Img<'a> {
@@ -24,9 +25,13 @@ impl<'a> ops::Drop for Img<'a> {
 }
 
 impl<'a> Img<'a> {
-    pub fn new(_sdl: &crate::SDL) -> Img {
-        Img {
-            _pd: std::marker::PhantomData,
+    pub fn init(_sdl: &crate::SDL, flags: Init) -> crate::Result<Img> {
+        if unsafe { IMG_Init(flags.bits()) } != flags.bits() {
+            Err(crate::error::SDLError::get())
+        } else {
+            Ok(Img {
+                pd: std::marker::PhantomData,
+            })
         }
     }
     pub fn load<P: AsRef<path::Path>>(&self, file: P) -> crate::Result<crate::surface::Surface> {
@@ -42,7 +47,7 @@ impl<'a> Img<'a> {
 
 #[link(name = "SDL2_image")]
 extern "C" {
-    pub(crate) fn IMG_Init(flags: libc::c_int) -> libc::c_int;
+    fn IMG_Init(flags: libc::c_int) -> libc::c_int;
     fn IMG_Load(file: *const libc::c_char) -> *const surface::SurfaceRec;
     fn IMG_Quit();
 }

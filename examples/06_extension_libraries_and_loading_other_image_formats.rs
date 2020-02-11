@@ -6,16 +6,16 @@ const SCREEN_WIDTH: i32 = 640;
 const SCREEN_HEIGHT: i32 = 480;
 
 fn main() -> sdl::Result<()> {
-    let sdl = sdl::init(sdl::INIT_VIDEO)?;
+    let sdl = sdl::init(sdl::Init::VIDEO)?;
 
-    let window = sdl.window_create(
+    let window = sdl.create_window(
         "SDL Tutorial",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        sdl::window::Flags::Shown,
+        sdl::window::Flags::SHOWN,
     )?;
 
-    let img = sdl.image(sdl::image::Init::Png)?;
+    let img = sdl.image(sdl::image::Init::PNG)?;
 
     let screen_surface = window.get_surface()?;
 
