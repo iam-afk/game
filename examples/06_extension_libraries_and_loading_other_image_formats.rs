@@ -15,7 +15,7 @@ fn main() -> sdl::Result<()> {
         sdl::window::Flags::Shown,
     )?;
 
-    let img = sdl.img(sdl::image::Init::Png)?;
+    let img = sdl.image(sdl::image::Init::Png)?;
 
     let screen_surface = window.get_surface()?;
 

@@ -3,6 +3,8 @@ mod error;
 pub mod event;
 pub mod image;
 mod keyboard;
+pub mod rect;
+mod render;
 mod rwops;
 pub mod surface;
 pub mod window;
@@ -10,9 +12,9 @@ pub mod window;
 pub use error::SDLError as Error;
 pub use event::Event;
 pub use keyboard::{Keycode, Keysym};
+pub use rect::Rect;
 use std::ops;
 use std::path;
-pub use surface::Rect;
 
 #[link(name = "SDL2")]
 extern "C" {
@@ -76,7 +78,7 @@ impl SDL {
         )
     }
 
-    pub fn img(&self, flag: image::Init) -> crate::Result<image::Img> {
+    pub fn image(&self, flag: image::Init) -> crate::Result<image::Img> {
         let flags = flag as libc::c_int;
         if unsafe { image::IMG_Init(flags) } != flags {
             Err(crate::error::SDLError::get())

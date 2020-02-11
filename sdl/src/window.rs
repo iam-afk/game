@@ -1,4 +1,5 @@
 use crate::error;
+use crate::render;
 use crate::surface;
 use std::ffi;
 use std::ops;
@@ -57,6 +58,10 @@ impl<'a> Window<'a> {
         }
     }
 
+    pub fn create_renderer(&self) -> crate::Result<render::Renderer> {
+        render::Renderer::new(self.ptr, -1, render::Flags::Accelerated)
+    }
+
     pub fn get_surface(&self) -> crate::Result<surface::WindowSurface> {
         let ptr = unsafe { SDL_GetWindowSurface(self.ptr) };
         if ptr.is_null() {
@@ -75,7 +80,7 @@ impl<'a> Window<'a> {
 }
 
 #[repr(C)]
-struct WindowRec {
+pub(crate) struct WindowRec {
     _private: [u8; 0],
 }
 

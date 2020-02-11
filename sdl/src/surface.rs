@@ -2,11 +2,12 @@ extern crate libc;
 
 use crate::error;
 use crate::rwops;
+use crate::Rect;
 use std::ops;
 use std::path;
 
 pub struct Surface {
-    ptr: *const SurfaceRec,
+    pub(crate) ptr: *const SurfaceRec,
 }
 
 impl ops::Drop for Surface {
@@ -128,14 +129,6 @@ pub struct PixelFormat {
     a_shift: u8,
     refcount: i32,
     next: *const PixelFormat,
-}
-
-#[repr(C)]
-pub struct Rect {
-    pub x: i32,
-    pub y: i32,
-    pub w: i32,
-    pub h: i32,
 }
 
 #[repr(C)]
