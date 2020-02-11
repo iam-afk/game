@@ -99,13 +99,13 @@ pub(crate) struct WindowRec {
 extern "C" {
     fn SDL_CreateWindow(
         title: *const libc::c_char,
-        x: i32,
-        y: i32,
-        w: i32,
-        h: i32,
+        x: libc::c_int,
+        y: libc::c_int,
+        w: libc::c_int,
+        h: libc::c_int,
         flags: u32,
     ) -> *const WindowRec;
     fn SDL_DestroyWindow(window: *const WindowRec);
     fn SDL_GetWindowSurface(window: *const WindowRec) -> *const surface::SurfaceRec;
-    fn SDL_UpdateWindowSurface(window: *const WindowRec) -> i32;
+    fn SDL_UpdateWindowSurface(window: *const WindowRec) -> libc::c_int;
 }

@@ -124,7 +124,7 @@ impl ops::Drop for Texture<'_> {
 extern "C" {
     fn SDL_CreateRenderer(
         window: *const window::WindowRec,
-        index: i32,
+        index: libc::c_int,
         flags: u32,
     ) -> *const RendererRec;
     fn SDL_DestroyRenderer(renderer: *const RendererRec);
@@ -134,12 +134,12 @@ extern "C" {
         surface: *const surface::SurfaceRec,
     ) -> *const TextureRec;
     fn SDL_DestroyTexture(texture: *const TextureRec);
-    fn SDL_RenderClear(renderer: *const RendererRec) -> i32;
+    fn SDL_RenderClear(renderer: *const RendererRec) -> libc::c_int;
     fn SDL_RenderCopy(
         renderer: *const RendererRec,
         texture: *const TextureRec,
         src_rect: Option<&Rect>,
         dst_rect: Option<&Rect>,
-    ) -> i32;
+    ) -> libc::c_int;
     fn SDL_RenderPresent(renderer: *const RendererRec);
 }

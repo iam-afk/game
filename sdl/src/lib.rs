@@ -20,13 +20,6 @@ pub use rect::Rect;
 use std::ops;
 use std::path;
 
-#[link(name = "SDL2")]
-extern "C" {
-    fn SDL_Init(flags: u32) -> i32;
-    fn SDL_Delay(ms: u32);
-    fn SDL_Quit();
-}
-
 bitflags! {
     #[repr(C)]
     pub struct Init: u32 {
@@ -98,4 +91,11 @@ impl SDL {
     pub fn poll_event(&self) -> Option<Event> {
         Event::poll()
     }
+}
+
+#[link(name = "SDL2")]
+extern "C" {
+    fn SDL_Init(flags: u32) -> i32;
+    fn SDL_Delay(ms: u32);
+    fn SDL_Quit();
 }
