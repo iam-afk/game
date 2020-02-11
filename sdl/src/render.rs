@@ -136,6 +136,15 @@ impl Renderer<'_> {
             Ok(())
         }
     }
+
+    pub fn set_viewport(&self, rect: Option<&Rect>) -> crate::Result<()> {
+        let result = unsafe { SDL_RenderSetViewport(self.ptr, rect) };
+        if result != 0 {
+            Err(error::SDLError::get())
+        } else {
+            Ok(())
+        }
+    }
 }
 
 #[repr(C)]
@@ -192,4 +201,5 @@ extern "C" {
         x: libc::c_int,
         y: libc::c_int,
     ) -> libc::c_int;
+    fn SDL_RenderSetViewport(renderer: *const RendererRec, rect: Option<&Rect>) -> libc::c_int;
 }

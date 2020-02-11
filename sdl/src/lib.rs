@@ -5,6 +5,7 @@ extern crate bitflags;
 
 mod error;
 pub mod event;
+pub mod hint;
 pub mod image;
 mod keyboard;
 pub mod rect;
@@ -90,6 +91,10 @@ impl SDL {
 
     pub fn poll_event(&self) -> Option<Event> {
         Event::poll()
+    }
+
+    pub fn set_hint(&self, name: &str, value: &str) -> bool {
+        hint::set(name, value)
     }
 }
 
