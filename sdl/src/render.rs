@@ -100,6 +100,42 @@ impl Renderer<'_> {
             SDL_RenderPresent(self.ptr);
         }
     }
+
+    pub fn fill_rect(&self, rect: Option<&Rect>) -> crate::Result<()> {
+        let result = unsafe { SDL_RenderFillRect(self.ptr, rect) };
+        if result != 0 {
+            Err(error::SDLError::get())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn draw_rect(&self, rect: Option<&Rect>) -> crate::Result<()> {
+        let result = unsafe { SDL_RenderDrawRect(self.ptr, rect) };
+        if result != 0 {
+            Err(error::SDLError::get())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn draw_line(&self, x1: i32, y1: i32, x2: i32, y2: i32) -> crate::Result<()> {
+        let result = unsafe { SDL_RenderDrawLine(self.ptr, x1, y1, x2, y2) };
+        if result != 0 {
+            Err(error::SDLError::get())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn draw_point(&self, x: i32, y: i32) -> crate::Result<()> {
+        let result = unsafe { SDL_RenderDrawPoint(self.ptr, x, y) };
+        if result != 0 {
+            Err(error::SDLError::get())
+        } else {
+            Ok(())
+        }
+    }
 }
 
 #[repr(C)]
@@ -142,4 +178,18 @@ extern "C" {
         dst_rect: Option<&Rect>,
     ) -> libc::c_int;
     fn SDL_RenderPresent(renderer: *const RendererRec);
+    fn SDL_RenderFillRect(renderer: *const RendererRec, rect: Option<&Rect>) -> libc::c_int;
+    fn SDL_RenderDrawRect(renderer: *const RendererRec, rect: Option<&Rect>) -> libc::c_int;
+    fn SDL_RenderDrawLine(
+        renderer: *const RendererRec,
+        x1: libc::c_int,
+        y1: libc::c_int,
+        x2: libc::c_int,
+        y2: libc::c_int,
+    ) -> libc::c_int;
+    fn SDL_RenderDrawPoint(
+        renderer: *const RendererRec,
+        x: libc::c_int,
+        y: libc::c_int,
+    ) -> libc::c_int;
 }
